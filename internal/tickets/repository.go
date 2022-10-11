@@ -2,8 +2,8 @@ package tickets
 
 import (
 	"context"
+	"desafio-goweb-francopesenda/internal/domain"
 	"fmt"
-
 )
 
 type Repository interface {
