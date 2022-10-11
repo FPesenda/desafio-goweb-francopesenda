@@ -11,10 +11,10 @@ type Service interface {
 }
 
 type service struct {
-	repository repository
+	repository Repository
 }
 
-func NewService(repository repository) Service {
+func NewService(repository Repository) Service {
 	return &service{
 		repository: repository,
 	}
@@ -37,5 +37,5 @@ func (serv *service) AverageDestination(ctx context.Context, country string) (fl
 	if errGetByCountry != nil {
 		return 0.0, errGetByCountry
 	}
-	return float64(len(listTickets) / len(listAllTickets)), nil
+	return (float64(len(listTickets)) / float64(len(listAllTickets))) * 100, nil
 }

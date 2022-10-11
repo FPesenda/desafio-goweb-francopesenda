@@ -1,7 +1,9 @@
 package main
 
 import (
+	"desafio-goweb-francopesenda/cmd/server/handler"
 	"desafio-goweb-francopesenda/internal/domain"
+	"desafio-goweb-francopesenda/internal/tickets"
 	"encoding/csv"
 	"fmt"
 	"os"
@@ -13,17 +15,26 @@ import (
 func main() {
 
 	// Cargo csv.
-	list, err := LoadTicketsFromFile("../../tickets.csv")
+	list, err := LoadTicketsFromFile("./tickets.csv")
 	if err != nil {
 		panic("Couldn't load tickets")
 	}
-
+	//TICKETS
+	repository := tickets.NewRepository(list)
+	service := tickets.NewService(repository)
+	tickets := handler.NewTicket(service)
+	//ROUTER
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) { c.String(200, "pong") })
 	// Rutas a desarollar:
 
 	// GET - “/ticket/getByCountry/:dest”
 	// GET - “/ticket/getAverage/:dest”
+	routerTickets := r.Group("/ticket")
+	{
+		routerTickets.GET("/getByCountry/:dest", tickets.GetTicketsByCountry())
+		routerTickets.GET("/getAverage/:dest", tickets.AverageDestination())
+	}
 	if err := r.Run(); err != nil {
 		panic(err)
 	}
